@@ -1,75 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Product List</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            padding: 30px;
+            width: 40%;
+            background-color: #151313;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .info {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #fff;
+            color: #000;
+            margin-top: 5px;
+        }
+
+        .button {
+            width: 100%;
+            background-color: #249d33;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #3e8e41;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+        }
+
+        .forgot-password a {
+            color: #fff;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        /* Media Query for Mobile View */
+        @media (max-width: 600px) {
+            .login-container {
+                width: 80%;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <h1>Product List</h1>
-  <table id="products-table">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Popularity</th>
-      </tr>
-    </thead>
-    <tbody>
-        
-    </tbody>
-  </table>
 
-  <script>
-    // Function to fetch the JSON data and parse it
-    function fetchAndDisplayProducts() {
-      fetch('https://s3.amazonaws.com/open-to-cors/assignment.json')
-        .then(response => response.json())
-        .then(data => {
-          const products = Object.values(data.products);
-          const sortedProducts = products.sort((a, b) => parseInt(b.popularity) - parseInt(a.popularity));
-          displayProducts(sortedProducts);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-    }
+    <div class="login-container">
+        <img src="Screenshot (186).png" alt="Logo" style="display: block; margin: auto; width: 80%;">
+        <form id="loginForm" onsubmit="return validateForm()">
+            <div class="info">
+                <input type="email" id="username" name="username" placeholder="Username" required>
+                <span id="usernameError" class="error-message"></span>
+            </div>
+            <div class="info">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <span id="passwordError" class="error-message"></span>
+            </div>
+            <button type="submit" class="button">Login</button>
+        </form>
+        <div class="forgot-password">
+            <a href="#">Forgot your password?</a>
+        </div>
+    </div>
 
-    // Function to display the products in a table
-    function displayProducts(products) {
-      const tableBody = document.getElementById('products-table').getElementsByTagName('tbody')[0];
+    <script>
+        function validateForm() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var usernameError = document.getElementById("usernameError");
+            var passwordError = document.getElementById("passwordError");
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      products.forEach(product => {
-        let row = tableBody.insertRow();
-        let titleCell = row.insertCell(0);
-        let priceCell = row.insertCell(1);
-        let popularityCell = row.insertCell(2);
+            // Validate username
+            if (!emailRegex.test(username)) {
+                usernameError.textContent = "Please enter a valid email address.";
+                return false;
+            } else {
+                usernameError.textContent = "";
+            }
 
-        titleCell.textContent = product.title;
-        priceCell.textContent = `₹${product.price}`;
-        popularityCell.textContent = product.popularity;
-      });
-    }
+            // Validate password
+            var passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                passwordError.textContent = "Password must be at least 8 characters long, contain an uppercase letter, a number, and only @ as special character.";
+                return false;
+            } else {
+                passwordError.textContent = "";
+            }
 
-    // Call the function on page load
-    document.addEventListener('DOMContentLoaded', fetchAndDisplayProducts);
-  </script>
+            return true;
+        }
+    </script>
+
 </body>
+
 </html>
